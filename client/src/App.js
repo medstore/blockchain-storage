@@ -1,24 +1,28 @@
-import logo from './logo.svg';
 import './App.css';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import { AppContextProvider } from './context/appContext/AppContext';
+import Signin from './pages/signin/Signin';
+import Signup from './pages/signup/Signup';
+import Topbar from './components/topbar/Topbar';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <AppContextProvider>
+      <div className="App">
+        <BrowserRouter>
+          <Topbar />
+          <div className="appWrapper">
+            <Switch>
+              <Route exact path="/" component={<></>} />
+              <Route exact path="/signin" component={Signin} />
+              <Route exact path="/signup" component={Signup} />
+
+              {/* <PrivateRoute exact path="/dashboard" component={<>dashbaord</>} /> */}
+            </Switch>
+          </div>
+        </BrowserRouter>
+      </div>
+    </AppContextProvider>
   );
 }
 
