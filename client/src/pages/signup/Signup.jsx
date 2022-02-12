@@ -8,7 +8,7 @@ export default function Signup() {
 
 
     const [errors, setErrors] = useState("");
-    const [user, setUser] = useState({ firstname: "", lastname: "", email: "", password: "", cpassword: "" })
+    const [user, setUser] = useState({ fullname: "", email: "", password: "", cpassword: "" })
     const [isFetching, setIsFetching] = useState(false);
     const history = useHistory();
 
@@ -24,36 +24,36 @@ export default function Signup() {
         setUser({ ...user, [name]: value });
     }
     const handleSubmit = async(e)=>{
-        // e.preventDefault();
-        // setIsFetching(true)
-        // setErrors(false);
-        // const config = {
-        //     header: {
-        //         "Content-Type": "application/json"
-        //     }
-        // }
-        // if (user.password === user.cpassword) {
-        //     try {
-        //         const {data} = await axios.post("/api/auth/signup", user, config).catch(err => {
-        //             if (err.response.status === 409) {
-        //                 setErrors("User Already Exist!")
-        //                 throw new Error(`user already exist`);
-        //             } else {
-        //                 setErrors("Internal Server Error")
-        //                 throw new Error(`Internal Server Error`);
-        //             }
-        //             throw err;
-        //         });
-        //         localStorage.setItem("authToken", data.token);
-        //         setIsFetching(false);
-        //         history.push('/userdashboard/profile')
-        //     } catch (err) {
-        //         setIsFetching(false)
-        //     }
-        // } else {
-        //     alert("Password don't match!")
-        //     setIsFetching(false)
-        // }
+        e.preventDefault();
+        setIsFetching(true)
+        setErrors(false);
+        const config = {
+            header: {
+                "Content-Type": "application/json"
+            }
+        }
+        if (user.password === user.cpassword) {
+            try {
+                const {data} = await axios.post("/api/auth/signup", user, config).catch(err => {
+                    if (err.response.status === 409) {
+                        setErrors("User Already Exist!")
+                        throw new Error(`user already exist`);
+                    } else {
+                        setErrors("Internal Server Error")
+                        throw new Error(`Internal Server Error`);
+                    }
+                    throw err;
+                });
+                localStorage.setItem("authToken", data.token);
+                setIsFetching(false);
+                history.push('/userdashboard/profile')
+            } catch (err) {
+                setIsFetching(false)
+            }
+        } else {
+            alert("Password don't match!")
+            setIsFetching(false)
+        }
     }
     
     return (
@@ -65,22 +65,22 @@ export default function Signup() {
                             <div className="errorDiv">
                                 <span className="errorMessage">{errors}</span>
                             </div> : null}
-                        <div className="divinput" > 
+                        {/* <div className="divinput" > 
                         <input type="text" required   
                         className="signupInput" 
                         name="firstname" 
                         value={user.firstname} 
                         onChange={handleChange} />
                         <label for="">First name</label>
-                        </div>
+                        </div> */}
 
                         <div className="divinput" > 
                         <input type="text" required  
                         className="signupInput" 
-                        name="lastname" 
-                        value={user.lastname} 
+                        name="fullname" 
+                        value={user.fullname} 
                         onChange={handleChange} />
-                        <label for="">Last name</label>
+                        <label for="">full name</label>
                         </div>
                         
                         <div className="divinput" > 

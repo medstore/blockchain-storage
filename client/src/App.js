@@ -17,7 +17,7 @@ function App() {
               <Route exact path="/signin" component={Signin} />
               <Route exact path="/signup" component={Signup} />
 
-              {/* <PrivateRoute exact path="/dashboard" component={<>dashbaord</>} /> */}
+              {/* <PrivateRoute exact path="/userdashboard" component={<>dashbaord</>} /> */}
             </Switch>
           </div>
         </BrowserRouter>
