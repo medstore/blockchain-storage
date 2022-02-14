@@ -32,23 +32,23 @@ export default function Signin() {
         setUser({ ...newuser, [name]: value });
     }
     const handleSubmit = async(e)=>{
-        // e.preventDefault();
-        // setIsFetching(true)
-        // setErrors(false);
-        // const config = {
-        //     header: {
-        //         "Content-Type": "application/json"
-        //     }
-        // }
-        // try {
-        //     const {data} = await axios.post("/api/auth/signin", newuser, config);
-        //     localStorage.setItem("authToken", data.token);
-        //     setIsFetching(false);
-        //     history.push('/userdashboard/profile')
-        // } catch (error) {
-        //     setErrors(error.response.data.error);
-        //     setIsFetching(false)
-        // }
+        e.preventDefault();
+        setIsFetching(true)
+        setErrors(false);
+        const config = {
+            header: {
+                "Content-Type": "application/json"
+            }
+        }
+        try {
+            const {data} = await axios.post("/api/auth/signin", newuser, config);
+            localStorage.setItem("authToken", data.token);
+            setIsFetching(false);
+            history.push('/userdashboard')
+        } catch (error) {
+            setErrors(error.response.data.error);
+            setIsFetching(false)
+        }
     }
     
     return (

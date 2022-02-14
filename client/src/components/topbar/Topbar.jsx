@@ -12,34 +12,34 @@ export default function Topbar() {
     const { authenticated, user, dispatch } = useContext(AppContext);
     const { isOpen, setOpen } = useContext(DrawerContext);
 
-    // const config = {
-    //     headers: {
-    //         "Content-Type": "application/json",
-    //         Authorization: `Bearer ${localStorage.getItem("authToken")}`
-    //     }
-    // }
-    // const getLoggedIn = async () => {
-    //     const res = await axios.get("/api/private/getuser", config);
-    //     if (res) {
-    //         dispatch({ type: "FETCH_SUCCESS", payload: res.data });
-    //     } else {
-    //         dispatch({ type: "EMPTY_STATE" });
-    //     }
-    // }
+    const config = {
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("authToken")}`
+        }
+    }
+    const getLoggedIn = async () => {
+        const res = await axios.get("/api/private/getuser", config);
+        if (res) {
+            dispatch({ type: "FETCH_SUCCESS", payload: res.data });
+        } else {
+            dispatch({ type: "EMPTY_STATE" });
+        }
+    }
 
-    // useEffect(() => {
-    //     getLoggedIn();
-    // }, []);
+    useEffect(() => {
+        getLoggedIn();
+    }, []);
 
     const handleDrawer = () => {
         setOpen();
     }
     const history = useHistory();
-    // const logoutHandler = () => {
-    //     localStorage.removeItem("authToken")
-    //     dispatch({ type: "EMPTY_STATE" });
-    //     history.push("/signin")
-    // }
+    const logoutHandler = () => {
+        localStorage.removeItem("authToken")
+        dispatch({ type: "EMPTY_STATE" });
+        history.push("/signin")
+    }
     return (
         <div className="topbar">
             <div className="topbarWrapper">
@@ -81,14 +81,11 @@ export default function Topbar() {
                                 <img className="topbarProfImg" src={user.profileImg} />
                                 <li class="menu-btn1">{user.email} </li>
                                 <div class="menu-content1">
-                                    <NavLink exact className="links-hidden" to='/userdashboard/profile'>DashBoard</NavLink>
+                                    <NavLink exact className="links-hidden" to='/userdashboard'>Dashboard</NavLink>
+                                    <p className="links-hidden" onClick={logoutHandler}>Logout</p>
                                 </div>
                             </div>
 
-                        </div>
-                        <div className="cartDiv" onClick={() => history.push('/userdashboard/addtocart')}>
-                            <span className="cartNumber">{user.cartItem.length}</span>
-                            <i class="fa fa-shopping-cart" aria-hidden="true"></i>
                         </div>
 
                     </div>
