@@ -78,10 +78,13 @@
     cursor: pointer;
 }
 .loginButton{
-    background-color: #283290;
+    background-color: #958ee4;
     font-size: 20px;
     font-weight: 500;
     color: white;
+}
+.loginButton:hover{
+    background-color: #8e85e9;
 }
 .loginButton:disabled{
     cursor: not-allowed;
@@ -92,10 +95,11 @@
     cursor: pointer;
 }
 .loginRegisterButton {
-    background-color: #42b72a;
-    font-size: 20px;
+    font-size: 16px;
+    background-color: transparent;
+    border: 1px solid #1775ee;
     font-weight: 500;
-    color: white;
+    color: #1775ee;
 }
 .loginRegisterButton:disabled{
     cursor: not-allowed;
