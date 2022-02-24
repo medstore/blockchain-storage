@@ -74,11 +74,11 @@
     height: 40px;
     padding: 10px;
     border-radius: 10px;
-    border: none;
     cursor: pointer;
 }
 .signupButton{
-    background-color: #283290;
+    background-color: #958ee4;
+    border: none;
     font-size: 20px;
     font-weight: 500;
     color: white;
@@ -86,12 +86,12 @@
 .signupButton:disabled{
     cursor: not-allowed;
 }
-.loginRegisterButton {
+/* .loginRegisterButton {
     background-color: #42b72a;
     font-size: 20px;
     font-weight: 500;
     color: white;
-}
+} */
 .loginRegisterButton:disabled{
     cursor: not-allowed;
 }

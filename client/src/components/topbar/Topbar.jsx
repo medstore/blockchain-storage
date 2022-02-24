@@ -81,7 +81,7 @@ export default function Topbar() {
                                 <img className="topbarProfImg" src={user.profileImg} />
                                 <li class="menu-btn1">{user.email} </li>
                                 <div class="menu-content1">
-                                    <NavLink exact className="links-hidden" to='/userdashboard'>Dashboard</NavLink>
+                                    <NavLink exact className="links-hidden" to='/userdashboard'>My Content</NavLink>
                                     <p className="links-hidden" onClick={logoutHandler}>Logout</p>
                                 </div>
                             </div>
