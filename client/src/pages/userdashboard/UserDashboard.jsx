@@ -14,36 +14,27 @@ export default function UserDashboard() {
     const reader = new FileReader();
     const { authenticated, user, dispatch } = useContext(AppContext);
     const [fileDetails, setFileDetails] = useState({});
-    const [filesInfo, setFilesInfo] = useState();
+    const [filesInfo, setFilesInfo] = useState([]);
     const [isFetching, setIsFetching] = useState(false);
-    console.log(user)
+
+    const getfileData = async ()=>{
+        setIsFetching(true)
+        try {
+            const res = await axios.post('/api/auth/fetchfiles',{userUid: user._id});
+            console.log("fileData", res)
+             setFilesInfo(res.data.filesData)
+            // console.log("res", res);
+            setIsFetching(false)
+        } catch (err) {
+            console.log(err)
+            setIsFetching(false)
+        }
+    }
+
     useEffect(()=>{
-      
-        const getData = async ()=>{
-            try {
-                const res = await axios.post('/api/private/retrive', {cid: "bafybeihk7b3wninici3dgscfmo2j57xodeqog2xl5jez5erjhgnkv6clfa"});
-                console.log("res", res);
-            } catch (err) {
-                console.log(err)
-            }
-        }
-        getData();
-        const getfileData = async ()=>{
-            setIsFetching(true)
-          
-            try {
-                const res = await axios.get('/api/auth/fetchfiles');
-                 setFilesInfo(res.data.filesData)
-                // console.log("res", res);
-                setIsFetching(false)
-            } catch (err) {
-                console.log(err)
-                setIsFetching(false)
-            }
-        }
         getfileData();
-    },[])
-    console.log(filesInfo)
+    },[user])
+
     const onChange = e => {
         setFile([...e.target.files]);
         setFilename(e.target.files[0].name);
@@ -160,7 +151,9 @@ export default function UserDashboard() {
                         }
                         
                     });
+                    
                     setIsFetching(false);
+                    getfileData();
                 }catch (err) {
                     setIsFetching(false)
                 }
@@ -251,8 +244,28 @@ export default function UserDashboard() {
                             <span>Download</span>
                         </div>
                     </div>
+                    {
+                        filesInfo.map((file)=>{
+                            return <div className="contentDiv">
+                            <div className="contentDate">
+                                <p>20/02/2022</p>
+                            </div>
+                            <div className="contentHash">
+                                <p>{file.cidValue}</p>
+                            </div>
+                            <div className="contentDown">
+                                <span>{file.filename}</span>
+                                <div>
+                                <i class="fas fa-regular fa-share"></i>
+                                <a target="_blank" href={`https://ipfs.io/ipfs//${file.cidValue}/${file.filename}`}><i class="fas fa-solid fa-download"></i></a>
+                                </div>
+                            </div>
+                            </div>
+                        })
+                    }
+                    
 
-                    <div className="contentDiv">
+                    {/* <div className="contentDiv">
                         <div className="contentDate">
                             <p>20/02/2022</p>
                         </div>
@@ -298,23 +311,7 @@ export default function UserDashboard() {
                             <i class="fas fa-solid fa-download"></i>
                             </div>
                         </div>
-                    </div>
-
-                    <div className="contentDiv">
-                        <div className="contentDate">
-                            <p>20/02/2022</p>
-                        </div>
-                        <div className="contentHash">
-                            <p>GVhGDVHVGhGhGhDVgd54d68dd98djdudlhuid5t6sdfnkskjk4ek...</p>
-                        </div>
-                        <div className="contentDown">
-                            <span>image.jpg</span>
-                            <div>
-                            <i class="fas fa-regular fa-share"></i>
-                            <i class="fas fa-solid fa-download"></i>
-                            </div>
-                        </div>
-                    </div>
+                    </div> */}
 
                     
                 </div>

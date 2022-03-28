@@ -7,7 +7,7 @@ const {signin, signup ,storeFiles, getallFilesData} = require('../controllers/au
 router.route("/signup").post(signup);
 router.route("/signin").post(signin);
 router.route("/upload").post(storeFiles);
-router.route("/fetchfiles").get(getallFilesData);
+router.route("/fetchfiles").post(getallFilesData);
 
 // router.route("/upload").post(upload.single('file'), storeFiles);
 

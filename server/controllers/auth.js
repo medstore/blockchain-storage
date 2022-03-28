@@ -73,29 +73,13 @@ exports.storeFiles = async (req, res, next) => {
     }
 };
 
-exports.retriveData = async (req, res, next) => {
-  try {
-      console.log(req.body)
-      const client = makeStorageClient()
-      const res = await client.get(req.body.cid)
-      console.log(`Got a response! [${res.status}] ${res.statusText}`)
-      if (!res.ok) {
-        // throw new Error(`failed to get ${req.body.cid}`)
-        console.log("got error")
-      }
-  }
-  catch (err) {
-    next(err);
-  }
-};
-
 
 exports.getallFilesData = async (req, res, next) => {
   try {
       // console.log(req.body.storeId);
     
-          const filesExist = await Files.find();
-
+          const filesExist = await Files.find({userUid: req.body.userUid});
+          console.log(filesExist)
           if (!filesExist) {
               return res.status(404).json({ sucess: false, error: "Files data unavailable" });
           }
