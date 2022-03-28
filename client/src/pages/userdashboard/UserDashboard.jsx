@@ -14,6 +14,7 @@ export default function UserDashboard() {
     const reader = new FileReader();
     const { authenticated, user, dispatch } = useContext(AppContext);
     const [fileDetails, setFileDetails] = useState({});
+    const [filesInfo, setFilesInfo] = useState();
     const [isFetching, setIsFetching] = useState(false);
     console.log(user)
     useEffect(()=>{
@@ -27,7 +28,22 @@ export default function UserDashboard() {
             }
         }
         getData();
+        const getfileData = async ()=>{
+            setIsFetching(true)
+          
+            try {
+                const res = await axios.get('/api/auth/fetchfiles');
+                 setFilesInfo(res.data.filesData)
+                // console.log("res", res);
+                setIsFetching(false)
+            } catch (err) {
+                console.log(err)
+                setIsFetching(false)
+            }
+        }
+        getfileData();
     },[])
+    console.log(filesInfo)
     const onChange = e => {
         setFile([...e.target.files]);
         setFilename(e.target.files[0].name);
@@ -120,7 +136,8 @@ export default function UserDashboard() {
                 const onRootCidReady = cid => {
                   console.log('uploading files with cid:', cid)
                   setFileDetails({...fileDetails , cidValue : cid , userUid : user._id , 
-                    userName : user.fullname , userEmail : user.email , userImg : user.profileImg })
+                    userName : user.fullname , userEmail : user.email , 
+                    userImg : user.profileImg ,filename :filename })
 
                   const config = {
                     header: {
@@ -132,7 +149,8 @@ export default function UserDashboard() {
                 try {
                     console.log(fileDetails)
                     const {data} = axios.post("/api/auth/upload", {cidValue : cid , userUid : user._id , 
-                        userName : user.fullname , userEmail : user.email , userImg : user.profileImg }, config).catch(err => {
+                        userName : user.fullname , userEmail : user.email , 
+                        userImg : user.profileImg ,filename :filename}, config).catch(err => {
                      
                         if (err.response.status === 409) {
                             console.log('error')

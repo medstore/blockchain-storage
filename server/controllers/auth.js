@@ -58,13 +58,14 @@ exports.signup = async (req, res, next) => {
 exports.storeFiles = async (req, res, next) => {
     try {
         console.log(req.body)
-        const { cidValue , userUid , userName , userEmail , userImg } = req.body;
+        const { cidValue , userUid , userName , userEmail , userImg ,filename} = req.body;
         const files = await Files.create({
           cidValue: cidValue ,
           userUid: userUid,
           userName: userName,
           userEmail: userEmail,
-          userImg : userImg
+          userImg : userImg,
+          filename : filename
       });
       res.status(200).json({ sucess: true, message: "File Added Successfully" });
     } catch (err) {
@@ -85,5 +86,27 @@ exports.retriveData = async (req, res, next) => {
   }
   catch (err) {
     next(err);
+  }
+};
+
+
+exports.getallFilesData = async (req, res, next) => {
+  try {
+      // console.log(req.body.storeId);
+    
+          const filesExist = await Files.find();
+
+          if (!filesExist) {
+              return res.status(404).json({ sucess: false, error: "Files data unavailable" });
+          }
+          else {
+            console.log(filesExist)
+              return res.status(200).json({ filesData: filesExist });
+          }
+
+      // }
+  } catch (err) {
+      next(err);
+      console.log(err)
   }
 };
