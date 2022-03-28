@@ -1,9 +1,10 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useState ,useContext} from 'react';
 import axios from 'axios';
 import Message from '../../components/message/Message';
 import Progress from '../../components/progress/Progress';
 import './userdashboard.css'
 import { Web3Storage } from 'web3.storage'
+import { AppContext } from '../../context/appContext/AppContext';
 export default function UserDashboard() {
     const [file, setFile] = useState();
     const [filename, setFilename] = useState('Choose File');
@@ -11,8 +12,12 @@ export default function UserDashboard() {
     const [message, setMessage] = useState('');
     const [uploadPercentage, setUploadPercentage] = useState(0);
     const reader = new FileReader();
-  
+    const { authenticated, user, dispatch } = useContext(AppContext);
+    const [fileDetails, setFileDetails] = useState({});
+    const [isFetching, setIsFetching] = useState(false);
+    console.log(user)
     useEffect(()=>{
+      
         const getData = async ()=>{
             try {
                 const res = await axios.post('/api/private/retrive', {cid: "bafybeihk7b3wninici3dgscfmo2j57xodeqog2xl5jez5erjhgnkv6clfa"});
@@ -24,7 +29,7 @@ export default function UserDashboard() {
         getData();
     },[])
     const onChange = e => {
-        setFile(e.target.files);
+        setFile([...e.target.files]);
         setFilename(e.target.files[0].name);
         
         // console.log(e.target.files[0])
@@ -83,7 +88,7 @@ export default function UserDashboard() {
     // };
     const onSubmit = async e => {
         e.preventDefault();
-   
+        setIsFetching(true)
         try {
 
             function getAccessToken() {
@@ -102,20 +107,76 @@ export default function UserDashboard() {
                 return new Web3Storage({ token: getAccessToken() })
               }
 
-              async function storeFiles () {
-                const client = makeStorageClient()
-                const cid = await client.put(file)
-                console.log('stored files with cid:', cid)
+            //   async function storeFiles () {
+            //     const client = makeStorageClient()
+            //     const cid = await client.put(file)
+            //     console.log('stored files with cid:', cid)
                
+            //   }
+            //   storeFiles()
+            console.log(file)
+            async function storeWithProgress () {
+                // show the root cid as soon as it's ready
+                const onRootCidReady = cid => {
+                  console.log('uploading files with cid:', cid)
+                  setFileDetails({...fileDetails , cidValue : cid , userUid : user._id , 
+                    userName : user.fullname , userEmail : user.email , userImg : user.profileImg })
+
+                  const config = {
+                    header: {
+                        "Content-Type": "application/json"
+                    }
+                }
+
+                
+                try {
+                    console.log(fileDetails)
+                    const {data} = axios.post("/api/auth/upload", {cidValue : cid , userUid : user._id , 
+                        userName : user.fullname , userEmail : user.email , userImg : user.profileImg }, config).catch(err => {
+                     
+                        if (err.response.status === 409) {
+                            console.log('error')
+                        } else {
+                            console.log("Internal Server Error")
+                            
+                        }
+                        
+                    });
+                    setIsFetching(false);
+                }catch (err) {
+                    setIsFetching(false)
+                }
+            
+                }
+              
+                // when each chunk is stored, update the percentage complete and display
+                const totalSize = file.map(f => f.size).reduce((a, b) => a + b, 0)
+                let uploaded = 0
+              
+                const onStoredChunk = size => {
+                  uploaded += size
+                  const pct = totalSize / uploaded
+                  console.log(`Uploading... ${pct.toFixed(2)}% complete`)
+                  setUploadPercentage(parseFloat(pct.toFixed(2)*100))
+                }
+              
+                // makeStorageClient returns an authorized Web3.Storage client instance
+                const client = makeStorageClient()
+              
+                // client.put will invoke our callbacks during the upload
+                // and return the root cid when the upload completes
+                return client.put(file, { onRootCidReady, onStoredChunk })
               }
-              storeFiles()
+              storeWithProgress()
+
             }catch (err) {
             if (err.response.status === 500) {
                 setMessage('There was a problem with the server');
             } else {
                 setMessage(err.response.data.msg);
             }
-            setUploadPercentage(0)
+            
+            // setUploadPercentage(0)
         }
     };
     return (

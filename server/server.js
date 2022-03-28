@@ -11,10 +11,7 @@ app.use(express.json());
 app.get("/", (req, res, next) => {
   res.send("Api running");
 });
-// app.post('/api/auth/upload', upload.single('avatar'), function (req, res, next) {
-//   // req.file is the `avatar` file
-//   // req.body will hold the text fields, if there were any
-// })
+
 // Connecting Routes
 app.use("/api/auth", require("./routes/auth"));
 app.use("/api/private", require("./routes/private"));

@@ -1,7 +1,6 @@
 const ErrorResponse = require("../utils/errorResponse");
 const User = require("../models/User");
-const Web3Storage = require("web3.storage");
-const getFilesFromPath = require("web3.storage");
+const Files = require("../models/Files");
 
 //  SignIn user
 exports.signin = async (req, res, next) => {
@@ -56,50 +55,18 @@ exports.signup = async (req, res, next) => {
   };
 
 
-// import { getFilesFromPath } from 'web3.storage'
-
-// import { Web3Storage } from 'web3.storage'
-
-function getAccessToken() {
-  // If you're just testing, you can paste in a token
-  // and uncomment the following line:
-  // return 'paste-your-token-here'
-
-  // In a real app, it's better to read an access token from an 
-  // environement variable or other configuration that's kept outside of 
-  // your code base. For this to work, you need to set the
-  // WEB3STORAGE_TOKEN environment variable before you run your code.
-  return process.env.WEB3STORAGE_TOKEN
-}
-
-function makeStorageClient() {
-  return new Web3Storage({ token: getAccessToken() })
-}
-
-
-async function getFiles(path) {
-  const files = await getFilesFromPath(path)
-  console.log(`read ${files.length} file(s) from ${path}`)
-  return files
-}
-
-
-// async function storeFiles(files) {
-//     const client = makeStorageClient()
-//     const cid = await client.put(files)
-//     console.log('stored files with cid:', cid)
-//     return cid
-//   }
-
-
-  //get user data
 exports.storeFiles = async (req, res, next) => {
     try {
-        console.log(req)
-        // const client = makeStorageClient()
-        // const cid = await client.put(files)
-        // console.log('stored files with cid:', cid)
-        res.status(200).json({"red" : "123"})
+        console.log(req.body)
+        const { cidValue , userUid , userName , userEmail , userImg } = req.body;
+        const files = await Files.create({
+          cidValue: cidValue ,
+          userUid: userUid,
+          userName: userName,
+          userEmail: userEmail,
+          userImg : userImg
+      });
+      res.status(200).json({ sucess: true, message: "File Added Successfully" });
     } catch (err) {
         next(err);
     }
