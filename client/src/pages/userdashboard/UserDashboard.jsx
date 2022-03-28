@@ -11,6 +11,7 @@ export default function UserDashboard() {
     const [message, setMessage] = useState('');
     const [uploadPercentage, setUploadPercentage] = useState(35);
     const reader = new FileReader();
+  
     const onChange = e => {
         setFile(e.target.files[0]);
         setFilename(e.target.files[0].name);
@@ -119,7 +120,7 @@ export default function UserDashboard() {
                     </h1>
                     <div className="contentDiv1">
                         <div className="contentDate1">
-                            <span>Date</span>
+                            <span>Upload Date</span>
                         </div>
                         <div className="contentHash1">
                             <span>Content ID</span>
