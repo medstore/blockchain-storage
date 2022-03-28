@@ -9,51 +9,60 @@ export default function UserDashboard() {
     const [filename, setFilename] = useState('Choose File');
     const [uploadedFile, setUploadedFile] = useState({});
     const [message, setMessage] = useState('');
-    const [uploadPercentage, setUploadPercentage] = useState(0);
-
+    const [uploadPercentage, setUploadPercentage] = useState(35);
+    const reader = new FileReader();
+  
     const onChange = e => {
         setFile(e.target.files[0]);
         setFilename(e.target.files[0].name);
+        
+        // console.log(e.target.files[0])
+        reader.addEventListener('load' , ()=>{
+            localStorage.setItem('ourFile'  , reader.result)
+            // console.log(reader.result)
+        })
+        console.log(reader.result)
+        reader.readAsDataURL(e.target.files[0])
+        // console.log(e.target.files[0])
+        
     };
 
     const onSubmit = async e => {
         e.preventDefault();
+        
         const formData = new FormData();
         formData.append('file', file);
 
-        console.log("file ", file)
+        let ourFile = localStorage.getItem('ourFile');
         try {
-            console.log(formData);
-            // Axios.post("https://httpbin.org/anything",formData).then(res => console.log(res)).catch(err => console.log(err))
-            
-            const res = await axios.post('https://httpbin.org/anything', formData)
-            console.log(res);
-            
-            
-            // const res = await axios.post('/upload', formData, {
-            //     headers: {
-            //         'Content-Type': 'multipart/form-data'
-            //     },
+            // const res = await axios.post('/upload', {ourFile : ourFile});
+            // // console.log(res)
+            // // console.log(formData);
+            // console.log(ourFile)
+            const res = await axios.post('/api/auth/upload', ourFile, {
+                // headers: {
+                //     'Content-Type': 'multipart/form-data'
+                // },
 
 
 
 
 
-            //     onUploadProgress: progressEvent => {
-            //         setUploadPercentage(
-            //             parseInt(
-            //                 Math.round((progressEvent.loaded * 100) / progressEvent.total)
-            //             )
-            //         );
-            //     }
-            // });
+                onUploadProgress: progressEvent => {
+                    setUploadPercentage(
+                        parseInt(
+                            Math.round((progressEvent.loaded * 100) / progressEvent.total)
+                        )
+                    );
+                }
+            });
 
-            // // Clear percentage
-            // setTimeout(() => setUploadPercentage(0), 10000);
+            // Clear percentage
+            setTimeout(() => setUploadPercentage(0), 10000);
 
-            // const { fileName, filePath } = res.data;
+            const { fileName, filePath } = res.data;
 
-            // setUploadedFile({ fileName, filePath });
+            setUploadedFile({ fileName, filePath });
 
             setMessage('File Uploaded');
         } catch (err) {
@@ -76,6 +85,7 @@ export default function UserDashboard() {
                             <div className='custom-file'>
                                 <input
                                     type='file'
+                                    name='file1'
                                     className='custom-file-input'
                                     id='customFile'
                                     onChange={onChange}
