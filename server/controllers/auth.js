@@ -104,3 +104,19 @@ exports.storeFiles = async (req, res, next) => {
         next(err);
     }
 };
+
+exports.retriveData = async (req, res, next) => {
+  try {
+      console.log(req.body)
+      const client = makeStorageClient()
+      const res = await client.get(req.body.cid)
+      console.log(`Got a response! [${res.status}] ${res.statusText}`)
+      if (!res.ok) {
+        // throw new Error(`failed to get ${req.body.cid}`)
+        console.log("got error")
+      }
+  }
+  catch (err) {
+    next(err);
+  }
+};

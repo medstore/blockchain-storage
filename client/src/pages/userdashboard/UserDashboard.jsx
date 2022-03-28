@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import axios from 'axios';
 import Message from '../../components/message/Message';
 import Progress from '../../components/progress/Progress';
@@ -9,9 +9,20 @@ export default function UserDashboard() {
     const [filename, setFilename] = useState('Choose File');
     const [uploadedFile, setUploadedFile] = useState({});
     const [message, setMessage] = useState('');
-    const [uploadPercentage, setUploadPercentage] = useState(35);
+    const [uploadPercentage, setUploadPercentage] = useState(0);
     const reader = new FileReader();
   
+    useEffect(()=>{
+        const getData = async ()=>{
+            try {
+                const res = await axios.post('/api/private/retrive', {cid: "bafybeihk7b3wninici3dgscfmo2j57xodeqog2xl5jez5erjhgnkv6clfa"});
+                console.log("res", res);
+            } catch (err) {
+                console.log(err)
+            }
+        }
+        getData();
+    },[])
     const onChange = e => {
         setFile(e.target.files[0]);
         setFilename(e.target.files[0].name);
@@ -43,10 +54,6 @@ export default function UserDashboard() {
                 // headers: {
                 //     'Content-Type': 'multipart/form-data'
                 // },
-
-
-
-
 
                 onUploadProgress: progressEvent => {
                     setUploadPercentage(
