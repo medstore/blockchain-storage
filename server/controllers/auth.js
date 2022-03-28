@@ -95,7 +95,7 @@ async function getFiles(path) {
   //get user data
 exports.storeFiles = async (req, res, next) => {
     try {
-        // console.log(req.body.ourFile)
+        console.log(req)
         // const client = makeStorageClient()
         // const cid = await client.put(files)
         // console.log('stored files with cid:', cid)
