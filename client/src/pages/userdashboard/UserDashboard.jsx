@@ -9,7 +9,7 @@ export default function UserDashboard() {
     const [filename, setFilename] = useState('Choose File');
     const [uploadedFile, setUploadedFile] = useState({});
     const [message, setMessage] = useState('');
-    const [uploadPercentage, setUploadPercentage] = useState(35);
+    const [uploadPercentage, setUploadPercentage] = useState(0);
 
     const onChange = e => {
         setFile(e.target.files[0]);
@@ -21,8 +21,15 @@ export default function UserDashboard() {
         const formData = new FormData();
         formData.append('file', file);
 
+        console.log("file ", file)
         try {
             console.log(formData);
+            // Axios.post("https://httpbin.org/anything",formData).then(res => console.log(res)).catch(err => console.log(err))
+            
+            const res = await axios.post('https://httpbin.org/anything', formData)
+            console.log(res);
+            
+            
             // const res = await axios.post('/upload', formData, {
             //     headers: {
             //         'Content-Type': 'multipart/form-data'
@@ -103,7 +110,7 @@ export default function UserDashboard() {
                     </h1>
                     <div className="contentDiv1">
                         <div className="contentDate1">
-                            <span>Date</span>
+                            <span>Upload Date</span>
                         </div>
                         <div className="contentHash1">
                             <span>Content ID</span>
