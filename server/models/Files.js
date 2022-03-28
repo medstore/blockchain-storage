@@ -32,8 +32,8 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: [true, "Please provide filename"],
   },
-
-});
+  
+},{timestamps: true});
 
 
 
