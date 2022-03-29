@@ -80,12 +80,10 @@ exports.getallFilesData = async (req, res, next) => {
               return res.status(404).json({ sucess: false, error: "Files data unavailable" });
           }
           else {
-            console.log(filesExist)
               return res.status(200).json({ filesData: filesExist });
           }
 
   } catch (err) {
       next(err);
-      console.log(err)
   }
 };
