@@ -10,7 +10,7 @@ export default function UserDashboard() {
     const [filename, setFilename] = useState('Choose File');
     const [uploadedFile, setUploadedFile] = useState({});
     const [message, setMessage] = useState('');
-    const [uploadPercentage, setUploadPercentage] = useState(0);
+    const [uploadPercentage, setUploadPercentage] = useState(35);
     const reader = new FileReader();
     const { authenticated, user, dispatch } = useContext(AppContext);
     const [fileDetails, setFileDetails] = useState({});
@@ -38,75 +38,14 @@ export default function UserDashboard() {
     const onChange = e => {
         setFile([...e.target.files]);
         setFilename(e.target.files[0].name);
-        
-        // console.log(e.target.files[0])
-        // reader.addEventListener('load' , ()=>{
-        //     localStorage.setItem('ourFile'  , reader.result)
-        //     // console.log(reader.result)
-        // })
-        // console.log(reader.result)
-        // reader.readAsDataURL(e.target.files[0])
-        // console.log(e.target.files[0])
-        
     };
 
-    // const onSubmit = async e => {
-    //     e.preventDefault();
-        
-    //     const formData = new FormData();
-    //     formData.append('file', file);
-
-    //     // let ourFile = localStorage.getItem('ourFile');
-    //     try {
-    //         // const res1 = await axios.post('https://httpbin.org/anything', {ourFile : ourFile});
-    //         // console.log(res1)
-    //         // // console.log(formData);
-    //         // console.log(ourFile)
-    //         const res = await axios.post('/api/auth/upload', formData, {
-    //             headers: {
-    //                 'Content-Type': 'multipart/form-data'
-    //             },
-
-    //             // onUploadProgress: progressEvent => {
-    //             //     setUploadPercentage(
-    //             //         parseInt(
-    //             //             Math.round((progressEvent.loaded * 100) / progressEvent.total)
-    //             //         )
-    //             //     );
-    //             // }
-    //         });
-
-    //         // Clear percentage
-    //         setTimeout(() => setUploadPercentage(0), 10000);
-
-    //         const { fileName, filePath } = res.data;
-
-    //         setUploadedFile({ fileName, filePath });
-
-    //         setMessage('File Uploaded');
-    //     } catch (err) {
-    //         if (err.response.status === 500) {
-    //             setMessage('There was a problem with the server');
-    //         } else {
-    //             setMessage(err.response.data.msg);
-    //         }
-    //         setUploadPercentage(0)
-    //     }
-    // };
     const onSubmit = async e => {
         e.preventDefault();
         setIsFetching(true)
         try {
 
             function getAccessToken() {
-                // If you're just testing, you can paste in a token
-                // and uncomment the following line:
-                // return 'paste-your-token-here'
-              
-                // In a real app, it's better to read an access token from an 
-                // environement variable or other configuration that's kept outside of 
-                // your code base. For this to work, you need to set the
-                // WEB3STORAGE_TOKEN environment variable before you run your code.
                 return process.env.REACT_APP_WEB3STORAGE_TOKEN
               }
               
@@ -114,14 +53,6 @@ export default function UserDashboard() {
                 return new Web3Storage({ token: getAccessToken() })
               }
 
-            //   async function storeFiles () {
-            //     const client = makeStorageClient()
-            //     const cid = await client.put(file)
-            //     console.log('stored files with cid:', cid)
-               
-            //   }
-            //   storeFiles()
-            console.log(file)
             async function storeWithProgress () {
                 // show the root cid as soon as it's ready
                 const onRootCidReady = cid => {
@@ -138,7 +69,6 @@ export default function UserDashboard() {
 
                 
                 try {
-                    console.log(fileDetails)
                     const {data} = axios.post("/api/auth/upload", {cidValue : cid , userUid : user._id , 
                         userName : user.fullname , userEmail : user.email , 
                         userImg : user.profileImg ,filename :filename}, config).catch(err => {
@@ -147,9 +77,7 @@ export default function UserDashboard() {
                             console.log('error')
                         } else {
                             console.log("Internal Server Error")
-                            
                         }
-                        
                     });
                     
                     setIsFetching(false);
@@ -190,6 +118,13 @@ export default function UserDashboard() {
             // setUploadPercentage(0)
         }
     };
+
+    const copyLink = (e)=>{
+        e.preventDefault();
+        let url = e.target.getAttribute('name');
+        navigator.clipboard.writeText(url);
+        alert("Copied the link: " + url);
+    }
     return (
         <div className='dashboard'>
             <div className="dashboard-wrapper">
@@ -248,15 +183,15 @@ export default function UserDashboard() {
                         filesInfo.map((file)=>{
                             return <div className="contentDiv">
                             <div className="contentDate">
-                                <p>20/02/2022</p>
+                                <p>{file.createdAt.split("T")[0] +" "+ file.createdAt.split("T")[1].substr(0, 8)}</p>
                             </div>
                             <div className="contentHash">
-                                <p>{file.cidValue}</p>
+                                <p>{file.cidValue.substr(0,50)+"....."}</p>
                             </div>
                             <div className="contentDown">
                                 <span>{file.filename}</span>
                                 <div>
-                                <i class="fas fa-regular fa-share"></i>
+                                <i class="fas fa-solid fa-clipboard" name={`https://ipfs.io/ipfs//${file.cidValue}/${file.filename}`} onClick={copyLink}></i>
                                 <a target="_blank" href={`https://ipfs.io/ipfs//${file.cidValue}/${file.filename}`}><i class="fas fa-solid fa-download"></i></a>
                                 </div>
                             </div>
