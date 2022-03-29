@@ -57,7 +57,6 @@ exports.signup = async (req, res, next) => {
 
 exports.storeFiles = async (req, res, next) => {
     try {
-        console.log(req.body)
         const { cidValue , userUid , userName , userEmail , userImg ,filename} = req.body;
         const files = await Files.create({
           cidValue: cidValue ,
@@ -76,21 +75,15 @@ exports.storeFiles = async (req, res, next) => {
 
 exports.getallFilesData = async (req, res, next) => {
   try {
-      // console.log(req.body.storeId);
-    
-          const filesExist = await Files.find({userUid: req.body.userUid});
-          console.log(filesExist)
+          const filesExist = await Files.find({userUid: req.body.userUid}).sort({ 'createdAt': -1 } );
           if (!filesExist) {
               return res.status(404).json({ sucess: false, error: "Files data unavailable" });
           }
           else {
-            console.log(filesExist)
               return res.status(200).json({ filesData: filesExist });
           }
 
-      // }
   } catch (err) {
       next(err);
-      console.log(err)
   }
 };
